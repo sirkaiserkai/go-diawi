@@ -45,4 +45,5 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+*.ipa
 # End of https://www.gitignore.io/api/go,macos
