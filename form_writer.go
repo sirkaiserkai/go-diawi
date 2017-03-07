@@ -27,7 +27,6 @@ func (fw *FormWriter) AddFormFile(fieldName, filename string) error {
 		return err
 	}
 	defer f.Close()
-	fmt.Printf("fw.mw: %s", fw.mw)
 	fieldWriter, err := fw.mw.CreateFormFile(fieldName, filename)
 	if err != nil {
 		return err

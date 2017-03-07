@@ -61,7 +61,7 @@ func (upRequest *UploadRequest) Upload() (*UploadResponse, error) {
 	formWriter.Close()
 
 	b := formWriter.GetBuffer()
-	req, err := http.NewRequest("POST", requestURL, b)
+	req, err := http.NewRequest("POST", uploadURL, b)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (upRequest *UploadRequest) Upload() (*UploadResponse, error) {
 	req.Header.Set("Content-Type", formWriter.mw.FormDataContentType())
 
 	// Submit the request
-	client := &http.Client{Timeout: 30 * time.Second}
+	client := &http.Client{Timeout: UploadTimeoutSeconds * time.Second}
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err

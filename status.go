@@ -16,6 +16,8 @@ type StatusRequest struct {
 	JobIdentifier string
 }
 
+// GetJobStatus makes a status request to see the current progress
+// for the app upload.
 func (s *StatusRequest) GetJobStatus() (*StatusResponse, error) {
 
 	url := statusURL + "?token=" + s.Token + "&job=" + s.JobIdentifier
@@ -25,14 +27,14 @@ func (s *StatusRequest) GetJobStatus() (*StatusResponse, error) {
 	}
 
 	// Submit the request
-	client := &http.Client{Timeout: 30 * time.Second}
+	client := &http.Client{Timeout: StatusTimeoutSeconds * time.Second}
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 
 	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("bad status %s", res.Status)
+		return nil, fmt.Errorf("bad status %s. Response body: %s", res.Status, res.Body)
 	}
 
 	resData, err := ioutil.ReadAll(res.Body)
@@ -46,16 +48,22 @@ func (s *StatusRequest) GetJobStatus() (*StatusResponse, error) {
 	return &statusRes, nil
 }
 
+// WaitForFinishedStatus continually pings diawi using the GetJobStatus
+// until the service provides a DiawiStatus other than
+// Processing (2001)
 func (s *StatusRequest) WaitForFinishedStatus() (*StatusResponse, error) {
 	sr, err := s.GetJobStatus()
 	if err != nil {
 		return nil, err
 	}
 
+	numberOfPolls := 0
 	for {
-
 		switch sr.Status {
 		case Processing:
+			if numberOfPolls > StatusPollingMax {
+				return nil, fmt.Errorf("Exceded max number of polls to get status.")
+			}
 			time.Sleep(1 * time.Second) // diawi documentation recommends 1 second between each status request.
 			sr, err = s.GetJobStatus()
 			if err != nil {

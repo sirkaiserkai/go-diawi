@@ -17,12 +17,19 @@ const (
 	CallbackEmailsFieldName   = "callback_emails"
 	InstallationNotifications = "installation_notifications"
 
-	// Request url constants
-	requestURL = "https://upload.diawi.com/"
-	statusURL  = "https://upload.diawi.com/status"
-
 	// Status Response Codes
 	Processing   DiawiStatus = 2001
 	Ok           DiawiStatus = 2000
 	ErrorOccured DiawiStatus = 4000
+)
+
+var (
+	// Request urls
+	uploadURL = "https://upload.diawi.com/"
+	statusURL = "https://upload.diawi.com/status"
+
+	// Timeouts
+	UploadTimeoutSeconds = 60
+	StatusTimeoutSeconds = 10
+	StatusPollingMax     = 10
 )
