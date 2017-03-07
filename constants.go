@@ -1,5 +1,7 @@
 package godiawi
 
+import "time"
+
 type DiawiStatus int
 
 const (
@@ -29,7 +31,7 @@ var (
 	statusURL = "https://upload.diawi.com/status"
 
 	// Timeouts
-	UploadTimeoutSeconds = 60
-	StatusTimeoutSeconds = 10
-	StatusPollingMax     = 10
+	UploadTimeoutSeconds time.Duration = 60
+	StatusTimeoutSeconds time.Duration = 10
+	StatusPollingMax                   = 10
 )
