@@ -1,4 +1,4 @@
-package main
+package godiawi
 
 type DiawiStatus int
 
