@@ -1,11 +1,9 @@
-package main
+package godiawi
 
 import (
-	// "bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	//"mime/multipart"
 	"net/http"
 	"time"
 )
