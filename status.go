@@ -1,11 +1,8 @@
 package godiawi
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"time"
 )
 
@@ -17,11 +14,23 @@ type StatusRequest struct {
 	JobIdentifier string
 }
 
+var EmptyTokenField = errors.New("Token field is blank")
+var EmptyJobField = errors.New("Job identifier field is blank")
+
 // GetJobStatus makes a status request to see the current progress
 // for the app upload.
 func (s *StatusRequest) GetJobStatus() (*StatusResponse, error) {
 
-	url := statusURL + "?token=" + s.Token + "&job=" + s.JobIdentifier
+	if s.Token == "" {
+		return nil, EmptyTokenField
+	}
+
+	if s.JobIdentifier == "" {
+		return nil, EmptyJobField
+	}
+
+	/*url := statusURL + "?token=" + s.Token + "&job=" + s.JobIdentifier
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -45,6 +54,11 @@ func (s *StatusRequest) GetJobStatus() (*StatusResponse, error) {
 	if err != nil {
 		return nil, err
 	}
+	*/
+	statusRes := StatusResponse{}
+	ds := NewDiawiService()
+
+	ds.GetStatus(s.Token, s.JobIdentifier, &statusRes)
 
 	return &statusRes, nil
 }

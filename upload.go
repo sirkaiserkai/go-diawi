@@ -18,6 +18,17 @@ type UploadRequest struct {
 	Comment                 string
 	CallbackUrl             string
 	CallbackEmails          []string
+
+	ds Diawi
+}
+
+// NewUploadRequest is the recommended means to create
+// UploadRequest structs
+func NewUploadRequest(token, file string) UploadRequest {
+	ur := UploadRequest{Token: token, File: file}
+	ur.ds = NewDiawiService()
+
+	return ur
 }
 
 var EmptyFileFieldError = errors.New("File value left blank")
@@ -59,36 +70,8 @@ func (upRequest *UploadRequest) Upload() (*UploadResponse, error) {
 
 	formWriter.Close()
 
-	/*b := formWriter.GetBuffer()
-	req, err := http.NewRequest("POST", uploadURL, b)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Set("Content-Type", formWriter.mw.FormDataContentType())
-
-	// Submit the request
-	client := &http.Client{Timeout: UploadTimeoutSeconds * time.Second}
-	res, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("bad status %s", res.Status)
-	}
-
-	resData, err := ioutil.ReadAll(res.Body)
-
-	uploadRes := UploadResponse{}
-	err = json.Unmarshal(resData, &uploadRes)
-	if err != nil {
-		return nil, err
-	}*/
-
-	ds := NewDiawiService()
 	ur := UploadResponse{}
-	err := ds.GetStatus(formWriter, &ur)
+	err := upRequest.ds.UploadApp(formWriter, &ur)
 	if err != nil {
 		return nil, err
 	}
