@@ -2,6 +2,7 @@ package godiawi
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -24,6 +25,9 @@ type UploadRequest struct {
 	CallbackEmails          []string
 }
 
+const EmptyFileFieldError = errors.New("File value left blank")
+const EmptyTokenFieldError = errors.New("Token value left blank")
+
 func (upRequest *UploadRequest) Upload() (*UploadResponse, error) {
 
 	formWriter := NewFormWriter()
@@ -31,13 +35,13 @@ func (upRequest *UploadRequest) Upload() (*UploadResponse, error) {
 	if upRequest.File != "" {
 		formWriter.AddFormFile(FileFieldName, upRequest.File)
 	} else {
-		return nil, fmt.Errorf("File value left blank")
+		return nil, EmptyFileFieldError
 	}
 
 	if upRequest.Token != "" {
 		formWriter.AddField(TokenFieldName, upRequest.Token)
 	} else {
-		return nil, fmt.Errorf("Token value left blank")
+		return nil, EmptyTokenFieldError
 	}
 
 	if upRequest.Comment != "" {
@@ -60,7 +64,7 @@ func (upRequest *UploadRequest) Upload() (*UploadResponse, error) {
 
 	formWriter.Close()
 
-	b := formWriter.GetBuffer()
+	/*b := formWriter.GetBuffer()
 	req, err := http.NewRequest("POST", uploadURL, b)
 	if err != nil {
 		return nil, err
@@ -85,9 +89,16 @@ func (upRequest *UploadRequest) Upload() (*UploadResponse, error) {
 	err = json.Unmarshal(resData, &uploadRes)
 	if err != nil {
 		return nil, err
+	}*/
+
+	ds := MakeDiawiService()
+	ur := UploadResponse{}
+	err = ds.GetStatus(formWriter, &ur)
+	if err != nil {
+		return nil, err
 	}
 
-	return &uploadRes, nil
+	return &ur, nil
 }
 
 // UploadResponse contains the response provided by diawi

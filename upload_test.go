@@ -4,6 +4,7 @@ import (
 	"testing"
 )
 
+// Unit Tests
 func TestErrorUpload(t *testing.T) {
 	ur := UploadRequest{Token: "", File: ""}
 

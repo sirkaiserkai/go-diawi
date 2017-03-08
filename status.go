@@ -2,6 +2,7 @@ package godiawi
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -48,6 +49,9 @@ func (s *StatusRequest) GetJobStatus() (*StatusResponse, error) {
 	return &statusRes, nil
 }
 
+const MaxPollsReachedError = errors.New("Exceeded max number of polls to get upload status.")
+const UnknownStatusError = errors.New("Unknown status error")
+
 // WaitForFinishedStatus continually pings diawi using the GetJobStatus
 // until the service provides a DiawiStatus other than
 // Processing (2001)
@@ -61,20 +65,23 @@ func (s *StatusRequest) WaitForFinishedStatus() (*StatusResponse, error) {
 	for {
 		switch sr.Status {
 		case Processing:
+
 			if numberOfPolls > StatusPollingMax {
-				return nil, fmt.Errorf("Exceded max number of polls to get status.")
+				return nil, MaxPollsReachedError
 			}
+
 			time.Sleep(1 * time.Second) // diawi documentation recommends 1 second between each status request.
 			sr, err = s.GetJobStatus()
 			if err != nil {
 				return nil, err
 			}
+
 		case Ok:
 			return sr, nil
 		case ErrorOccured:
 			return sr, fmt.Errorf("Response included error status = 4000. sr: %s", sr.String())
 		default:
-			return sr, fmt.Errorf("Unknown status error")
+			return sr, UnknownStatusError
 		}
 	}
 }
