@@ -88,7 +88,7 @@ func (upRequest *UploadRequest) Upload() (*UploadResponse, error) {
 
 	ds := NewDiawiService()
 	ur := UploadResponse{}
-	err = ds.GetStatus(formWriter, &ur)
+	err := ds.GetStatus(formWriter, &ur)
 	if err != nil {
 		return nil, err
 	}

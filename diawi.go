@@ -2,8 +2,11 @@ package godiawi
 
 import (
 	"bytes"
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"time"
+	""
 )
 
 type MultipartForm bytes.Buffer
@@ -22,7 +25,7 @@ func NewDiawiService() DiawiService {
 	return DiawiService{uploadUrl: uploadURL, statusUrl: statusURL}
 }
 
-func (d *MakeDiawiService) GetStatus(fw FormWriter, responseStruct *interface{}) error {
+func (d *DiawiService) GetStatus(fw FormWriter, responseStruct *interface{}) error {
 	req, err := http.NewRequest("POST", uploadURL, fw.GetBuffer())
 	if err != nil {
 		return err
