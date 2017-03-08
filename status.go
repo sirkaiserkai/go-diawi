@@ -49,8 +49,8 @@ func (s *StatusRequest) GetJobStatus() (*StatusResponse, error) {
 	return &statusRes, nil
 }
 
-const MaxPollsReachedError = errors.New("Exceeded max number of polls to get upload status.")
-const UnknownStatusError = errors.New("Unknown status error")
+var MaxPollsReachedError = errors.New("Exceeded max number of polls to get upload status.")
+var UnknownStatusError = errors.New("Unknown status error")
 
 // WaitForFinishedStatus continually pings diawi using the GetJobStatus
 // until the service provides a DiawiStatus other than

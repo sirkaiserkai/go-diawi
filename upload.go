@@ -1,12 +1,7 @@
 package godiawi
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-	"time"
 )
 
 // UploadRequest is used to upload apps to diawi.
@@ -25,8 +20,8 @@ type UploadRequest struct {
 	CallbackEmails          []string
 }
 
-const EmptyFileFieldError = errors.New("File value left blank")
-const EmptyTokenFieldError = errors.New("Token value left blank")
+var EmptyFileFieldError = errors.New("File value left blank")
+var EmptyTokenFieldError = errors.New("Token value left blank")
 
 func (upRequest *UploadRequest) Upload() (*UploadResponse, error) {
 
@@ -91,7 +86,7 @@ func (upRequest *UploadRequest) Upload() (*UploadResponse, error) {
 		return nil, err
 	}*/
 
-	ds := MakeDiawiService()
+	ds := NewDiawiService()
 	ur := UploadResponse{}
 	err = ds.GetStatus(formWriter, &ur)
 	if err != nil {

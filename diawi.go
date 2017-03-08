@@ -18,7 +18,7 @@ type DiawiService struct {
 	statusUrl string
 }
 
-func MakeDiawiService() DiawiService {
+func NewDiawiService() DiawiService {
 	return DiawiService{uploadUrl: uploadURL, statusUrl: statusURL}
 }
 
