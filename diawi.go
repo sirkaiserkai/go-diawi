@@ -1,3 +1,4 @@
+// Package godiawi wraps the diawi api in go
 package godiawi
 
 import (
@@ -9,27 +10,25 @@ import (
 	"time"
 )
 
-type MultipartForm bytes.Buffer
-
-type Diawi interface {
-	UploadApp(fw FormWriter, responseStruct interface{}) error
+type diawi interface {
+	UploadApp(fw formWriter, responseStruct interface{}) error
 	GetStatus(token, job string, responseStruct interface{}) error
 }
 
-func NewDiawiService() Diawi {
-	return DiawiService{uploadURL: uploadURL, statusURL: statusURL}
+func newDiawiService() diawi {
+	return diawiService{uploadURL: uploadURL, statusURL: statusURL}
 }
 
-type DiawiService struct {
+type diawiService struct {
 	uploadURL string
 	statusURL string
 }
 
-func (d DiawiService) UploadApp(fw FormWriter, responseStruct interface{}) error {
+func (d diawiService) UploadApp(fw formWriter, responseStruct interface{}) error {
 	return makeRequest(d.uploadURL, "POST", fw.mw.FormDataContentType(), fw.GetBuffer(), UploadTimeoutSeconds, responseStruct)
 }
 
-func (d DiawiService) GetStatus(token, job string, responseStruct interface{}) error {
+func (d diawiService) GetStatus(token, job string, responseStruct interface{}) error {
 	url := d.statusURL + "?token=" + token + "&job=" + job
 	return makeRequest(url, "GET", "application/json", nil, StatusTimeoutSeconds, responseStruct)
 }

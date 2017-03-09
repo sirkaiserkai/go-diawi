@@ -8,20 +8,20 @@ import (
 	"os"
 )
 
-type FormWriter struct {
+type formWriter struct {
 	buff *bytes.Buffer
 	mw   *multipart.Writer
 }
 
-func NewFormWriter() FormWriter {
-	fw := FormWriter{}
+func newformWriter() formWriter {
+	fw := formWriter{}
 	fw.buff = &bytes.Buffer{}
 	fw.mw = multipart.NewWriter(fw.buff)
 
 	return fw
 }
 
-func (fw *FormWriter) AddFormFile(fieldName, filename string) error {
+func (fw *formWriter) AddFormFile(fieldName, filename string) error {
 	f, err := os.Open(filename)
 	if err != nil {
 		return err
@@ -39,7 +39,7 @@ func (fw *FormWriter) AddFormFile(fieldName, filename string) error {
 	return nil
 }
 
-func (fw *FormWriter) AddField(fieldName string, fieldValue interface{}) error {
+func (fw *formWriter) AddField(fieldName string, fieldValue interface{}) error {
 	switch val := fieldValue.(type) {
 	case string:
 		return fw.AddStringField(fieldName, val)
@@ -52,7 +52,7 @@ func (fw *FormWriter) AddField(fieldName string, fieldValue interface{}) error {
 	}
 }
 
-func (fw *FormWriter) AddStringField(fieldName string, fieldValue string) error {
+func (fw *formWriter) AddStringField(fieldName string, fieldValue string) error {
 	fieldWriter, err := fw.mw.CreateFormField(fieldName)
 	if err != nil {
 		return err
@@ -65,7 +65,7 @@ func (fw *FormWriter) AddStringField(fieldName string, fieldValue string) error 
 	return nil
 }
 
-func (fw *FormWriter) AddBoolField(fieldName string, fieldValue bool) error {
+func (fw *formWriter) AddBoolField(fieldName string, fieldValue bool) error {
 	fieldWriter, err := fw.mw.CreateFormField(fieldName)
 	if err != nil {
 		return err
@@ -85,7 +85,7 @@ func (fw *FormWriter) AddBoolField(fieldName string, fieldValue bool) error {
 	return nil
 }
 
-func (fw *FormWriter) AddStringSliceField(fieldName string, fieldValue []string) error {
+func (fw *formWriter) AddStringSliceField(fieldName string, fieldValue []string) error {
 	fieldWriter, err := fw.mw.CreateFormField(fieldName)
 	if err != nil {
 		return err
@@ -106,10 +106,10 @@ func (fw *FormWriter) AddStringSliceField(fieldName string, fieldValue []string)
 	return nil
 }
 
-func (fw *FormWriter) GetBuffer() *bytes.Buffer {
+func (fw *formWriter) GetBuffer() *bytes.Buffer {
 	return fw.buff
 }
 
-func (fw *FormWriter) Close() {
+func (fw *formWriter) Close() {
 	fw.mw.Close()
 }

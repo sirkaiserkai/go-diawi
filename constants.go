@@ -4,20 +4,23 @@ import "time"
 
 type DiawiStatus int
 
+// Diawi Status Codes
 const (
 	// Field name constants
-	FileFieldName  = "file"
-	TokenFieldName = "token"
-	JobFieldName   = "job"
+	fileFieldName  = "file"
+	tokenFieldName = "token"
+	jobFieldName   = "job"
 
 	// Optional field name constants
-	FindByUDIDFieldName       = "find_by_udid"
-	WallOfAppsFieldName       = "wall_of_apps"
-	PasswordFieldName         = "password"
-	CommentFieldName          = "comment"
-	CallbackURLFieldName      = "callback_url"
-	CallbackEmailsFieldName   = "callback_emails"
-	InstallationNotifications = "installation_notifications"
+
+	findByUDIDFieldName = "find_by_udid"
+
+	wallOfAppsFieldName       = "wall_of_apps"
+	passwordFieldName         = "password"
+	commentFieldName          = "comment"
+	callbackURLFieldName      = "callback_url"
+	callbackEmailsFieldName   = "callback_emails"
+	installationNotifications = "installation_notifications"
 
 	// Status Response Codes
 	Processing   DiawiStatus = 2001

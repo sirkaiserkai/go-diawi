@@ -4,7 +4,7 @@ import (
 	"errors"
 )
 
-// UploadRequest is used to upload apps to diawi.
+// UploadRequest is used to wrap the parameters for a diawi upload request
 type UploadRequest struct {
 	// Required parameters
 	Token string
@@ -19,14 +19,14 @@ type UploadRequest struct {
 	CallbackUrl             string
 	CallbackEmails          []string
 
-	ds Diawi
+	ds diawi
 }
 
 // NewUploadRequest is the recommended means to create
 // UploadRequest structs
 func NewUploadRequest(token, file string) UploadRequest {
 	ur := UploadRequest{Token: token, File: file}
-	ur.ds = NewDiawiService()
+	ur.ds = newDiawiService()
 
 	return ur
 }
@@ -34,39 +34,43 @@ func NewUploadRequest(token, file string) UploadRequest {
 var EmptyFileFieldError = errors.New("File value left blank")
 var EmptyTokenFieldError = errors.New("Token value left blank")
 
+// Upload requests the diawi service using the values set in the
+// respective UploadRequest. Returns an UploadResponse provided diawi
+// was able to process the request (Not guaranteeing it was successful).
+// Returns an error object if an error is encountered.
 func (upRequest *UploadRequest) Upload() (*UploadResponse, error) {
 
-	formWriter := NewFormWriter()
+	formWriter := newformWriter()
 
 	if upRequest.File != "" {
-		formWriter.AddFormFile(FileFieldName, upRequest.File)
+		formWriter.AddFormFile(fileFieldName, upRequest.File)
 	} else {
 		return nil, EmptyFileFieldError
 	}
 
 	if upRequest.Token != "" {
-		formWriter.AddField(TokenFieldName, upRequest.Token)
+		formWriter.AddField(tokenFieldName, upRequest.Token)
 	} else {
 		return nil, EmptyTokenFieldError
 	}
 
 	if upRequest.Comment != "" {
-		formWriter.AddField(CommentFieldName, upRequest.Comment)
+		formWriter.AddField(commentFieldName, upRequest.Comment)
 	}
 
 	if upRequest.CallbackUrl != "" {
-		formWriter.AddField(CallbackURLFieldName, upRequest.CallbackUrl)
+		formWriter.AddField(callbackURLFieldName, upRequest.CallbackUrl)
 	}
 
 	if len(upRequest.CallbackEmails) != 0 {
-		formWriter.AddField(CallbackEmailsFieldName, upRequest.CallbackEmails)
+		formWriter.AddField(callbackEmailsFieldName, upRequest.CallbackEmails)
 	}
 
-	formWriter.AddField(FindByUDIDFieldName, upRequest.FindByUDID)
+	formWriter.AddField(findByUDIDFieldName, upRequest.FindByUDID)
 
-	formWriter.AddField(WallOfAppsFieldName, upRequest.WallOfApps)
+	formWriter.AddField(wallOfAppsFieldName, upRequest.WallOfApps)
 
-	formWriter.AddField(InstallationNotifications, upRequest.InstallationNotifcation)
+	formWriter.AddField(installationNotifications, upRequest.InstallationNotifcation)
 
 	formWriter.Close()
 

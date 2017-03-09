@@ -30,7 +30,7 @@ func TestGetStatusNoJobId(t *testing.T) {
 
 func TestGetStatusSuccess(t *testing.T) {
 	sr := NewStatusRequest(TestToken, TestAppFile)
-	sr.ds = DiawiTestSerivce{returnFailStatus: false, returnSuccessStatus: true}
+	sr.ds = diawiTestSerivce{returnFailStatus: false, returnSuccessStatus: true}
 
 	sResponse, err := sr.GetJobStatus()
 	if err != nil {
@@ -44,7 +44,7 @@ func TestGetStatusSuccess(t *testing.T) {
 
 func TestGetStatusError(t *testing.T) {
 	sr := NewStatusRequest(TestToken, TestAppFile)
-	sr.ds = DiawiTestSerivce{returnFailStatus: true, returnSuccessStatus: false}
+	sr.ds = diawiTestSerivce{returnFailStatus: true, returnSuccessStatus: false}
 
 	sResponse, err := sr.GetJobStatus()
 	if err != nil {
@@ -58,7 +58,7 @@ func TestGetStatusError(t *testing.T) {
 
 func TestGetStatusProcessing(t *testing.T) {
 	sr := NewStatusRequest(TestToken, TestAppFile)
-	sr.ds = DiawiTestSerivce{returnFailStatus: false, returnSuccessStatus: false}
+	sr.ds = diawiTestSerivce{returnFailStatus: false, returnSuccessStatus: false}
 
 	sResponse, err := sr.GetJobStatus()
 	if err != nil {
@@ -73,15 +73,15 @@ func TestGetStatusProcessing(t *testing.T) {
 func WaitForFinished(t *testing.T, expectedStatus DiawiStatus) {
 	sr := NewStatusRequest(TestToken, TestAppFile)
 	if expectedStatus == Ok {
-		sr.ds = DiawiTestSerivce{returnFailStatus: false, returnSuccessStatus: true}
+		sr.ds = diawiTestSerivce{returnFailStatus: false, returnSuccessStatus: true}
 	}
 
 	if expectedStatus == Processing {
-		sr.ds = DiawiTestSerivce{returnFailStatus: false, returnSuccessStatus: false}
+		sr.ds = diawiTestSerivce{returnFailStatus: false, returnSuccessStatus: false}
 	}
 
 	if expectedStatus == ErrorOccured {
-		sr.ds = DiawiTestSerivce{returnFailStatus: true, returnSuccessStatus: false}
+		sr.ds = diawiTestSerivce{returnFailStatus: true, returnSuccessStatus: false}
 	}
 
 	sResponse, err := sr.WaitForFinishedStatus()
@@ -143,7 +143,7 @@ func TestIntegrationGetStatusSuccess(t *testing.T) {
 }
 
 func TestIntegrationWaitForFinishedStatusSuccess(t *testing.T) {
-	if *integration {
+	if !(*integration) {
 		t.Skip()
 	}
 

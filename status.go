@@ -13,12 +13,14 @@ type StatusRequest struct {
 	Token         string
 	JobIdentifier string
 
-	ds Diawi
+	ds diawi
 }
 
+// NewStatusRequest is the method to be used to create the
+// StatusRequest struct
 func NewStatusRequest(token, jobIdentifer string) StatusRequest {
 	sr := StatusRequest{Token: token, JobIdentifier: jobIdentifer}
-	sr.ds = NewDiawiService()
+	sr.ds = newDiawiService()
 
 	return sr
 }
@@ -38,32 +40,6 @@ func (s *StatusRequest) GetJobStatus() (*StatusResponse, error) {
 		return nil, EmptyJobField
 	}
 
-	/*url := statusURL + "?token=" + s.Token + "&job=" + s.JobIdentifier
-
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	// Submit the request
-	client := &http.Client{Timeout: StatusTimeoutSeconds * time.Second}
-	res, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("bad status %s. Response body: %s", res.Status, res.Body)
-	}
-
-	resData, err := ioutil.ReadAll(res.Body)
-
-	statusRes := StatusResponse{}
-	err = json.Unmarshal(resData, &statusRes)
-	if err != nil {
-		return nil, err
-	}
-	*/
 	statusRes := StatusResponse{}
 	s.ds.GetStatus(s.Token, s.JobIdentifier, &statusRes)
 
@@ -73,7 +49,7 @@ func (s *StatusRequest) GetJobStatus() (*StatusResponse, error) {
 var MaxPollsReachedError = errors.New("Exceeded max number of polls to get upload status.")
 var UnknownStatusError = errors.New("Unknown status error")
 
-// WaitForFinishedStatus continually pings diawi using the GetJobStatus
+// WaitForFinishedStatus continually polls diawi using GetJobStatus
 // until the service provides a DiawiStatus other than
 // Processing (2001)
 func (s *StatusRequest) WaitForFinishedStatus() (*StatusResponse, error) {

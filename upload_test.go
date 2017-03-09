@@ -16,13 +16,13 @@ var (
 )
 
 // Used for testing purposes
-type DiawiTestSerivce struct {
+type diawiTestSerivce struct {
 	failUpload          bool // Flag set when we want the service to return a negative for upload
 	returnFailStatus    bool
 	returnSuccessStatus bool
 }
 
-func (d DiawiTestSerivce) UploadApp(fw FormWriter, responseStruct interface{}) error {
+func (d diawiTestSerivce) UploadApp(fw formWriter, responseStruct interface{}) error {
 	if d.failUpload {
 		return fmt.Errorf("Expected Error")
 	}
@@ -37,7 +37,7 @@ func (d DiawiTestSerivce) UploadApp(fw FormWriter, responseStruct interface{}) e
 	return nil
 }
 
-func (d DiawiTestSerivce) GetStatus(token, job string, responseStruct interface{}) error {
+func (d diawiTestSerivce) GetStatus(token, job string, responseStruct interface{}) error {
 
 	sr, ok := responseStruct.(*StatusResponse)
 	if !ok {
@@ -97,7 +97,7 @@ func TestUploadMissingToken(t *testing.T) {
 
 func TestUploadSuccess(t *testing.T) {
 	ur := NewUploadRequest(TestToken, TestAppFile)
-	ur.ds = DiawiTestSerivce{}
+	ur.ds = diawiTestSerivce{}
 
 	uploadResponse, err := ur.Upload()
 	if err != nil {
@@ -111,7 +111,7 @@ func TestUploadSuccess(t *testing.T) {
 
 func TestVerboseUploadSuccess(t *testing.T) {
 	ur := NewUploadRequest(TestToken, TestAppFile)
-	ur.ds = DiawiTestSerivce{}
+	ur.ds = diawiTestSerivce{}
 
 	ur.WallOfApps = true
 	ur.FindByUDID = true
@@ -133,7 +133,7 @@ func TestVerboseUploadSuccess(t *testing.T) {
 
 func TestExpectedFailure(t *testing.T) {
 	ur := NewUploadRequest(TestToken, TestAppFile)
-	ur.ds = DiawiTestSerivce{failUpload: true}
+	ur.ds = diawiTestSerivce{failUpload: true}
 
 	_, err := ur.Upload()
 	if err == nil {
