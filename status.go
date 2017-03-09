@@ -12,6 +12,15 @@ type StatusRequest struct {
 	// Required parameters
 	Token         string
 	JobIdentifier string
+
+	ds Diawi
+}
+
+func NewStatusRequest(token, jobIdentifer string) StatusRequest {
+	sr := StatusRequest{Token: token, JobIdentifier: jobIdentifer}
+	sr.ds = NewDiawiService()
+
+	return sr
 }
 
 var EmptyTokenField = errors.New("Token field is blank")
@@ -56,9 +65,7 @@ func (s *StatusRequest) GetJobStatus() (*StatusResponse, error) {
 	}
 	*/
 	statusRes := StatusResponse{}
-	ds := NewDiawiService()
-
-	ds.GetStatus(s.Token, s.JobIdentifier, &statusRes)
+	s.ds.GetStatus(s.Token, s.JobIdentifier, &statusRes)
 
 	return &statusRes, nil
 }

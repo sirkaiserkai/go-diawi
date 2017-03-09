@@ -17,7 +17,9 @@ var (
 
 // Used for testing purposes
 type DiawiTestSerivce struct {
-	failUpload bool
+	failUpload          bool // Flag set when we want the service to return a negative for upload
+	returnFailStatus    bool
+	returnSuccessStatus bool
 }
 
 func (d DiawiTestSerivce) UploadApp(fw FormWriter, responseStruct interface{}) error {
@@ -36,6 +38,26 @@ func (d DiawiTestSerivce) UploadApp(fw FormWriter, responseStruct interface{}) e
 }
 
 func (d DiawiTestSerivce) GetStatus(token, job string, responseStruct interface{}) error {
+
+	sr, ok := responseStruct.(*StatusResponse)
+	if !ok {
+		return fmt.Errorf("response struct is wrong type: %T", responseStruct)
+	}
+
+	if d.returnFailStatus {
+		sr.Status = ErrorOccured
+		sr.Message = "Error occured"
+		return nil
+	} else if d.returnSuccessStatus {
+		sr.Status = Ok
+		sr.Message = "Hello, world!"
+		sr.Hash = "12345"
+		sr.Link = "http://fake.come"
+		return nil
+	} else {
+		sr.Status = Processing
+		sr.Message = "Processing request"
+	}
 	return nil
 }
 
