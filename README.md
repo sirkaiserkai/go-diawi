@@ -5,7 +5,7 @@ Package written in go to interface with [diawi](https://www.diawi.com/)'s API
 ## Install
 
 ```sh
-go get -u github.com/sirkaiserkai/go-diawi
+go get github.com/sirkaiserkai/go-diawi
 ```
 
 ## Example
